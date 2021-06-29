@@ -1,0 +1,21 @@
+# 8x8 평면의 체스 판에서 나이트 말의 좌표가 주어졌을 때, 이동이 가능한 위치의 수를 출력하는 코드
+# Ex) input: 'a1' -> output: 2
+
+position = input()
+
+for i in range(97, 106):
+    if position[0] == chr(i):
+        x = i-96
+        break
+y = int(position[1])
+
+counter = 0
+steps = [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]]
+for step in steps:
+    if x + step[0] < 1 or x + step[0] > 8:
+        continue
+    if y + step[1] < 1 or y + step[1] > 8:
+        continue
+    counter += 1
+
+print(counter)
