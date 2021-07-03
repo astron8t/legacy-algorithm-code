@@ -1,0 +1,31 @@
+import sys
+
+N, M = map(int, input().split())
+
+data = list(map(int, sys.stdin.readline().rstrip().split()))
+data.sort()
+end = data[-1]
+
+
+def check(start, end):
+    result = 0
+    target = (end + start)//2
+    for ddeok in data:
+        if ddeok - target > 0:
+            result += ddeok - target
+    return result
+
+def solve(data, start, end):
+    result = check(start, end)
+    while result != M:
+        if result > M:
+            start = (end + start)//2
+            print('start =',start, 'end=', end)
+            result = check(start, end)
+        else:
+            end = (end + start)//2
+            print('start =', start, 'end=', end)
+            result = check(start, end)
+    return (end + start)//2
+
+print(solve(data, 0, end))
