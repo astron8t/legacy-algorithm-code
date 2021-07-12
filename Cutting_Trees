@@ -1,0 +1,23 @@
+import sys
+
+n, m = map(int, sys.stdin.readline().rstrip().split())
+trees = list(map(int, sys.stdin.readline().rstrip().split()))
+
+def cut_trees(trees, l):
+    result = 0
+    for t in trees:
+        if t > l:
+            result += t - l
+    return result
+
+start = 1
+end = max(trees)
+while start <= end:
+
+    l = (start + end) // 2
+    if cut_trees(trees, l) >= m:
+        start = (l + 1)
+
+    elif cut_trees(trees, l) < m:
+        end = (l - 1)
+print(end)
