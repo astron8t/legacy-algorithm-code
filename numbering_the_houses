@@ -1,0 +1,44 @@
+import sys
+from collections import deque
+
+n = int(sys.stdin.readline())
+maps = [list(sys.stdin.readline().rstrip()) for _ in range(n)]
+visited = [[0] * n for _ in range(n)]
+houses = []
+
+def bfs(maps, start, visited):
+    #bfs문 한번에 도는 집 수 카운트
+    h_counter = 1
+    que = deque([start])
+    visited[start[0]][start[1]] = 1
+    dx = [1, -1, 0, 0]
+    dy = [0, 0, 1, -1]
+    #큐 빌때까지 진행
+    while que:
+        v = que.popleft()
+        for i in range(4):
+            x = v[0] + dx[i]
+            y = v[1] + dy[i]
+            #x, y 가 맵 밖을 벗어나지 않도록
+            if 0 <= y < n:
+                if 0 <= x < n:
+                    #x, y 에 집이 있고 방문 안했으면 큐에 추가하고 집 수 카운트 +1
+                    if maps[x][y] == '1':
+                        if not visited[x][y]:
+                            que.append([x, y])
+                            h_counter += 1
+                            visited[x][y] = 1
+    return h_counter
+
+count = 0
+for i in range(n):
+    for j in range(n):
+        if maps[i][j] == '1':
+            if not visited[i][j]:
+                houses.append(bfs(maps, [i, j], visited))
+                count += 1
+
+print(count)
+houses.sort()
+for i in range(count):
+    print(houses[i])
