@@ -1,0 +1,39 @@
+import heapq
+import sys
+INF = int(1e9)
+
+def dijkstra(start):
+    q = []
+    heapq.heappush(q, (0, start))
+    distance[start][start] = 0
+    while q:
+        dist, now = heapq.heappop(q)
+        if distance[start][now] < dist:
+            continue
+        for g in graph[now]:
+            cost = dist + g[1]
+            if cost < distance[start][g[0]]:
+                distance[start][g[0]] = cost
+                heapq.heappush(q, (cost, g[0]))
+
+t = int(input())
+for _ in range(t):
+    n, m, t = map(int, sys.stdin.readline().rstrip().split())
+    s, g, h = map(int, sys.stdin.readline().rstrip().split())
+    graph = [[] for _ in range(n+1)]
+    for _ in range(m):
+        a1, a2, a3 = map(int, sys.stdin.readline().rstrip().split())
+        graph[a1].append((a2, a3))
+        graph[a2].append((a1, a3))
+    candidates = [int(sys.stdin.readline()) for _ in range(t)]
+    distance = [[INF] * (n+1) for _ in range(n + 1)]
+
+    dijkstra(s)
+    dijkstra(g)
+    dijkstra(h)
+    result = []
+    for c in candidates:
+        if distance[s][c] == distance[s][g] + distance[g][h] + distance[h][c] or distance[s][c] == distance[s][h] + distance[h][g] + distance[g][c]:
+            result.append(c)
+    for r in sorted(result):
+        print(r, end=' ')
