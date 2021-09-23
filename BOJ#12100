@@ -1,0 +1,80 @@
+import sys
+from collections import deque
+from copy import deepcopy
+
+n = int(input())
+table = []
+for _ in range(n):
+    table.append(list(map(int, sys.stdin.readline().rstrip().split())))
+
+#방향은 북, 동, 남, 서
+dx = (-1, 0, 1, 0)
+dy = (0, 1, 0, -1)
+
+def move_block(tab, coor, direc):
+    value = tab[coor[0]][coor[1]]
+    while True:
+        if 0 > coor[0] + dx[direc] or n <= coor[0] + dx[direc] or 0 > coor[1] + dy[direc] or n <= coor[1] + dy[direc]:
+            break
+        if tab[coor[0] + dx[direc]][coor[1] + dy[direc]] == 0:
+            tab[coor[0] + dx[direc]][coor[1] + dy[direc]] = value
+            tab[coor[0]][coor[1]] = 0
+            coor = [coor[0] + dx[direc], coor[1] + dy[direc]]
+        elif tab[coor[0] + dx[direc]][coor[1] + dy[direc]] == value:
+            tab[coor[0] + dx[direc]][coor[1] + dy[direc]] = -(2 * value)
+            tab[coor[0]][coor[1]] = 0
+            break
+        else:
+            break
+    return tab
+
+def move_table(tab, direc):
+    if direc == 0:
+        for i in range(n):
+            for j in range(n):
+                if tab[i][j] > 0:
+                    tab = move_block(tab, [i, j], direc)
+    elif direc == 1:
+        for j in range(n-1, -1, -1):
+            for i in range(n):
+                if tab[i][j] > 0:
+                    tab = move_block(tab, [i, j], direc)
+    elif direc == 2:
+        for i in range(n-1, -1, -1):
+            for j in range(n):
+                if tab[i][j] > 0:
+                    tab = move_block(tab, [i, j], direc)
+    elif direc == 3:
+        for j in range(n):
+            for i in range(n):
+                if tab[i][j] > 0:
+                    tab = move_block(tab, [i, j], direc)
+
+    for i in range(n):
+        for j in range(n):
+            tab[i][j] = abs(tab[i][j])
+
+    return tab
+
+
+def main():
+    maxvals = []
+    queue = deque([[table, 0]])
+    while queue:
+        tab, iter = queue.popleft()
+        mav = []
+        for i in range(n):
+            mav.append(max(tab[i]))
+        maxvals.append(max(mav))
+        if iter == 5:
+            continue
+
+        for c in range(4):
+            temptab = deepcopy(tab)
+            newtab = move_table(temptab, c)
+            queue.append([newtab, iter + 1])
+    print(max(maxvals))
+
+
+if __name__ == '__main__':
+    main()
