@@ -1,1 +1,49 @@
+import sys
+from collections import deque
 
+m, n = map(int, input().split())
+graph = []
+
+for _ in range(n):
+    graph.append(list(map(int, sys.stdin.readline().rstrip().split())))
+
+q = deque()
+direc = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+blanks = 0
+counter = 0
+
+def start():
+    global blanks
+    flag = False
+    for i in range(n):
+        for j in range(m):
+            if graph[i][j] == 1:
+                q.append((i, j))
+            elif graph[i][j] == 0:
+                blanks += 1
+                flag = True
+    return flag
+
+def bfs():
+    global counter
+    day = 0
+    while q:
+        x, y = q.popleft()
+        day = graph[x][y]
+        for i in range(4):
+            nx = x + direc[i][0]
+            ny = y + direc[i][1]
+            if 0 <= nx < n and 0 <= ny < m and graph[nx][ny] == 0:
+                graph[nx][ny] = day+1
+                q.append((nx, ny))
+                counter += 1
+    return (day-1)
+
+if not start():
+    print(0)
+else:
+    result = bfs()
+    if counter == blanks:
+        print(result)
+    else:
+        print(-1)
